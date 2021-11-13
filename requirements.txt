@@ -1,0 +1,8 @@
+discord.py[voice]
+discord.py
+PyMySQL
+requests
+ffmpeg
+discord-timers
+numpy
+wikipedia-api
