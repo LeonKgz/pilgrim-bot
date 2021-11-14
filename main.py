@@ -188,7 +188,7 @@ async def news_alert():
 
         name = book_full_name[passage_name]
         
-        ret = f"**{name}**"
+        ret = f"**{name}**\n"
         curr_chapter = "None"
 
         for b in struct["book"]:
@@ -200,10 +200,11 @@ async def news_alert():
           for key in list(b["chapter"].keys()):
             verse = key
             content = b["chapter"][key]["verse"]
-            ret += f"\t{chapter}:{verse}\t{content}"
+            ret += f"`  {chapter}:{verse}  `  {content}"
 
         for ch in guild.channels:
-          if ("ріка-любові" in ch.name):
+          #if ("ріка-любові" in ch.name):
+          if ("технический" in ch.name):
             await ch.send(f"{ret}")
 
     except Eception as e:
@@ -304,7 +305,7 @@ async def bible(ctx, *, args=None):
 
       name = book_full_name[passage_name]
       
-      ret = f"**{name}**"
+      ret = f"**{name}**\n"
       curr_chapter = "None"
 
       for b in struct["book"]:
@@ -316,7 +317,7 @@ async def bible(ctx, *, args=None):
         for key in list(b["chapter"].keys()):
           verse = key
           content = b["chapter"][key]["verse"]
-          ret += f"\t{chapter}:{verse}\t{content}"
+          ret += f"`  {chapter}:{verse}  `  {content}"
 
       await ctx.channel.send(f"{ret}")
     elif struct["type"] == "chapter":
@@ -331,7 +332,7 @@ async def bible(ctx, *, args=None):
         verse = key
         content = struct["chapter"][key]["verse"]
 
-        size = len(f"{chapter}:{verse}\t{content}")
+        size = len(f"`  {chapter}:{verse}  `  {content}")
 
         if total_size + size >= 2000:
           total_size = 0
@@ -339,7 +340,7 @@ async def bible(ctx, *, args=None):
 
         total_size += size
 
-        rets[-1] += f"{chapter}:{verse}\t{content}"
+        rets[-1] += f"`  {chapter}:{verse}  `  {content}"
       
       for r in rets: 
         await ctx.channel.send(f"{r}")
