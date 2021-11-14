@@ -200,7 +200,7 @@ async def news_alert():
           for key in list(b["chapter"].keys()):
             verse = key
             content = b["chapter"][key]["verse"]
-            ret += f"`  {chapter}:{verse}  `  {content}"
+            ret += f"`  {chapter:>2}:{verse:<2}  `  {content}"
 
         for ch in guild.channels:
           #if ("ріка-любові" in ch.name):
@@ -270,7 +270,7 @@ async def bible(ctx, *, args=None):
     "Галаты": "Послание к Галатам",
     "Ефесяне": "Послание к Ефесянам",
     "Филиппийцы": "Послание к Филиппийцам",
-    "Колоссянe": "Послание к Колоссянам",
+    "Колоссяне": "Послание к Колоссянам",
     "1Фессалоникийцы": "1-е послание к Фессалоникийцам",
     "2Фессалоникийцы": "2-е послание к Фессалоникийцам",
     "1Тимофей": "1-е послание к Тимофею",
@@ -302,7 +302,6 @@ async def bible(ctx, *, args=None):
       # TODO make a dictionaru mapping json return names to russian or ukrainian full translation.
       # Currently its working for russian only
       name = struct["book"][0]["book_name"]
-
       name = book_full_name[passage_name]
       
       ret = f"**{name}**\n"
@@ -317,7 +316,7 @@ async def bible(ctx, *, args=None):
         for key in list(b["chapter"].keys()):
           verse = key
           content = b["chapter"][key]["verse"]
-          ret += f"`  {chapter}:{verse}  `  {content}"
+          ret += f"`  {chapter:>2}:{verse:<2}  `  {content}"
 
       await ctx.channel.send(f"{ret}")
     elif struct["type"] == "chapter":
@@ -332,7 +331,7 @@ async def bible(ctx, *, args=None):
         verse = key
         content = struct["chapter"][key]["verse"]
 
-        size = len(f"`  {chapter}:{verse}  `  {content}")
+        size = len(f"`  {chapter:>2}:{verse:<2}  `  {content}")
 
         if total_size + size >= 2000:
           total_size = 0
@@ -340,12 +339,13 @@ async def bible(ctx, *, args=None):
 
         total_size += size
 
-        rets[-1] += f"`  {chapter}:{verse}  `  {content}"
+        rets[-1] += f"`  {chapter:>2}:{verse:<2}  `  {content}"
       
       for r in rets: 
         await ctx.channel.send(f"{r}")
 
   except Exception as e:
+    #print(e)
     print(e)
 
 
