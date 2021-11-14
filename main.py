@@ -44,14 +44,15 @@ def get_db_cursor():
 async def on_ready():
   print(f'{bot.user.name} has connected to Discord!')
 
-@tasks.loop(seconds=43200.0)
+@tasks.loop(seconds=3600.0)
 async def news_alert():
   guild = bot.get_guild(GUILD) 
   db, cursor = get_db_cursor()
 
   hour = int(datetime.datetime.now().hour)
+  print(f"DEBUG: Current hour is {hour}")
 
-  if (guild):
+  if (guild and hour == 9):
 
     counter = None
 
