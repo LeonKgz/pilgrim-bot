@@ -52,7 +52,7 @@ async def news_alert():
   hour = int(datetime.datetime.now().hour)
   print(f"DEBUG: Current hour is {hour}")
 
-  if (guild and hour == 9):
+  if (guild and hour == 10):
 
     counter = None
 
@@ -203,8 +203,7 @@ async def news_alert():
             ret += f"`  {chapter:>2}:{verse:<2}  `  {content}"
 
         for ch in guild.channels:
-          #if ("ріка-любові" in ch.name):
-          if ("технический" in ch.name):
+          if ("ріка-любові" in ch.name):
             await ch.send(f"{ret}")
 
     except Eception as e:
