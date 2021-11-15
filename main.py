@@ -304,21 +304,36 @@ async def bible(ctx, *, args=None):
       name = struct["book"][0]["book_name"]
       name = book_full_name[passage_name]
       
-      ret = f"**{name}**\n"
+      rets = [f"**{name}**\n"]
+      total_size = len(rets[0])
+
       curr_chapter = "None"
 
       for b in struct["book"]:
         chapter = b["chapter_nr"]
         if (curr_chapter != chapter):
-          ret += "\n"
+          rets[-1] += "\n"
         curr_chapter = chapter
         
         for key in list(b["chapter"].keys()):
           verse = key
           content = b["chapter"][key]["verse"]
-          ret += f"`  {chapter:>2}:{verse:<2}  `  {content}"
+#          rets[-1] += f"`  {chapter:>2}:{verse:<2}  `  {content}"
+          
+          size = len(f"`  {chapter:>2}:{verse:<2}  `  {content}")
+          
+          if total_size + size >= 2000:
+            total_size = 0
+            rets.append("") 
 
-      await ctx.channel.send(f"{ret}")
+          total_size += size
+          rets[-1] += f"`  {chapter:>2}:{verse:<2}  `  {content}"
+
+      for r in rets: 
+        await ctx.channel.send(f"{r}")
+
+      #await ctx.channel.send(f"{ret}")
+
     elif struct["type"] == "chapter":
       name = struct["book_name"]
       name = book_full_name[passage_name]
