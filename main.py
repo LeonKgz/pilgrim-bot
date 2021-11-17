@@ -44,6 +44,232 @@ def get_db_cursor():
 async def on_ready():
   print(f'{bot.user.name} has connected to Discord!')
 
+
+async def call_bible_api(lang, book_name, numbers_string, channel):
+
+    version = lang
+    passage_name = book_name
+    numbers = numbers_string
+
+    russian_books_to_code = {
+      "Матфей": "Matthew",
+      "Марк": "Mark",
+      "Лука": "Luke",
+      "Иоанн": "John",
+      "Деяния": "Acts",
+      "Иаков": "James",
+      "1Петр": "1Peter",
+      "2Петр": "2Peter",
+      "1Иоанн": "1John",
+      "2Иоанн": "2John",
+      "3Иоанн": "3John",
+      "Иуда": "Jude",
+      "Римляне": "Rom",
+      "1Коринфяне": "1Corinthians",
+      "2Коринфяне": "2Corinthians",
+      "Галаты": "Gal",
+      "Ефесяне": "Eph",
+      "Филиппийцы": "Philippians",
+      "Колоссяне": "Col",
+      "1Фессалоникийцы": "1Th",
+      "2Фессалоникийцы": "2Th",
+      "1Тимофей": "1Tim",
+      "2Тимофей": "2Tim",
+      "Тит": "Titus",
+      "Филимон": "Philemon",
+      "Евреи": "Hebrews",
+      "Откровение": "Rev ",
+    }
+
+    full_russian_names = {
+      "Матфей": "Евангелие от Матфея",
+      "Марк": "Евангелие от Марка",
+      "Лука": "Евангелие от Луки",
+      "Иоанн": "Евангелие от Иоанна",
+      "Деяния": "Деяния святых апостолов",
+      "Иаков": "Послание Иакова",
+      "1Петр": "1-е послание Петра",
+      "2Петр": "2-е послание Петра",
+      "1Иоанн": "1-е послание Иоанна",
+      "2Иоанн": "2-е послание Иоанна",
+      "3Иоанн": "3-е послание Иоанна",
+      "Иуда": "Послание Иуды",
+      "Римляне": "Послание к Римлянам",
+      "1Коринфяне": "1-е послание к Коринфянам",
+      "2Коринфяне": "2-е послание к Коринфянам",
+      "Галаты": "Послание к Галатам",
+      "Ефесяне": "Послание к Ефесянам",
+      "Филиппийцы": "Послание к Филиппийцам",
+      "Колоссянe": "Послание к Колоссянам",
+      "1Фессалоникийцы": "1-е послание к Фессалоникийцам",
+      "2Фессалоникийцы": "2-е послание к Фессалоникийцам",
+      "1Тимофей": "1-е послание к Тимофею",
+      "2Тимофей": "2-е послание к Тимофею",
+      "Тит": "Послание к Титу",
+      "Филимон": "Послание к Филимону",
+      "Евреи": "Послание к Евреям",
+      "Откровение": "Откровение Иоанна Богослова",
+    }
+
+    ukranian_books_to_code = {
+      "Матей": "Matthew",
+      "Марко": "Mark",
+      "Лука": "Luke",
+      "Йоан": "John",
+      "Діяння": "Acts",
+      "Яків": "James",
+      "1Петро": "1Peter",
+      "2Петро": "2Peter",
+      "1Йоан": "1John",
+      "2Йоан": "2John",
+      "3Йоан": "3John",
+      "Юда": "Jude",
+      "Римляни": "Rom",
+      "1Корінтяни": "1Corinthians",
+      "2Корінтяни": "2Corinthians",
+      "Галати": "Gal",
+      "Ефесяни": "Eph",
+      "Филипяни": "Philippians",
+      "Колосяни": "Col",
+      "1Солуняни": "1Th",
+      "2Солуняни": "2Th",
+      "1Тимотей": "1Tim",
+      "2Тимоьей": "2Tim",
+      "Тит": "Titus",
+      "Филимон": "Philemon",
+      "Євреї": "Hebrews",
+      "Одкровення": "Rev ",
+    }
+
+    full_ukranian_names = {
+      "Матей": "Євангеліє від св. Матвія",
+      "Марко": "Євангеліє від св. Марка",
+      "Лука": "Євангеліє від св. Луки",
+      "Йоан": "Євангеліє від св. Івана",
+      "Діяння": "Діяння святих апостолів",
+      "Яків": "Соборне послання св. апостола Якова",
+      "1Петро": "Перше соборне послання св. апостола Петра",
+      "2Петро": "Друге соборне послання св. апостола Петра",
+      "1Йоан": "Перше соборне послання св. апостола Івана",
+      "2Йоан": "Друге соборне послання св. апостола Івана",
+      "3Йоан": "Третє соборне послання св. апостола Івана ",
+      "Юда": "Соборне послання св. апостола Юди",
+      "Римляни": "Послання св. апостола Павла до римлян",
+      "1Корінтяни": "Перше послання апостола Павла до коринфян",
+      "2Корінтяни": "Друге послання апостола Павла до коринфян",
+      "Галати": "Послання св. апостола Павла до галатів",
+      "Ефесяни": "Послання св. апостола Павла до ефесян",
+      "Филипяни": "Послання св. апостола Павла до филипян",
+      "Колосяни": "Послання св. апостола Павла до колосян",
+      "1Солуняни": "Перше послання св. апостола Павла до солунян",
+      "2Солуняни": "Друге послання св. апостола Павла до солунян",
+      "1Тимотей": "Перше послання св. апостола Павла до Тимофія",
+      "2Тимоьей": "Друге послання св. апостола Павла до Тимофія",
+      "Тит": "Послання св. апостола Павла до Тит",
+      "Филимон": "Послання св. апостола Павла до Филимона",
+      "Євреї": "Послання до євреїв",
+      "Одкровення": "Обявлення св. Івана Богослова",
+    }
+
+    full_names = {
+      "рус": full_russian_names,
+      "укр": full_ukranian_names,
+    }
+
+    books_to_code = {
+      "рус": russian_books_to_code,
+      "укр": ukranian_books_to_code,
+    }
+    
+    versions = {
+      "рус": "synodal",
+      "укр": "ukranian",
+    }
+
+    try:
+      passage = books_to_code[version][passage_name]
+      name = full_names[version][passage_name]
+      version = versions[version]
+    except Exception as e:
+      print(e)
+      # If version is not specified use one of API's 
+      version = version
+      passage = passage_name
+
+    url = f"https://getbible.net/json?passage={passage}%20{numbers}&version={version}"
+
+    response = requests.get(url)
+    try: #try parsing to dict
+      dataform = str(response.text).strip("'<>() ").replace('\'', '\"')
+    #  print(dataform[:-2])
+      dataform = dataform[:-2]
+      struct = json.loads(dataform)
+      
+      if (struct["type"] == "verse"):
+        # TODO make a dictionaru mapping json return names to russian or ukrainian full translation.
+        # Currently its working for russian only
+        #name = struct["book"][0]["book_name"]
+        #name = full_russian_names[passage_name]
+        
+        rets = [f"**{name}**\n"]
+        total_size = len(rets[0])
+
+        curr_chapter = "None"
+
+        for b in struct["book"]:
+          chapter = b["chapter_nr"]
+          if (curr_chapter != chapter):
+            rets[-1] += "\n"
+          curr_chapter = chapter
+          
+          for key in list(b["chapter"].keys()):
+            verse = key
+            content = b["chapter"][key]["verse"]
+  #          rets[-1] += f"`  {chapter:>2}:{verse:<2}  `  {content}"
+            
+            size = len(f"`  {chapter:>2}:{verse:<2}  `  {content}")
+            
+            if total_size + size >= 2000:
+              total_size = 0
+              rets.append("") 
+
+            total_size += size
+            rets[-1] += f"`  {chapter:>2}:{verse:<2}  `  {content}"
+
+        for r in rets: 
+          await channel.send(f"{r}")
+
+        #await ctx.channel.send(f"{ret}")
+
+      elif struct["type"] == "chapter":
+        name = struct["book_name"]
+        name = full_russian_names[passage_name]
+
+        rets = [f"**{name}**\n\n"]
+        total_size = len(rets[0])
+
+        chapter = struct["chapter_nr"]
+        for key in list(struct["chapter"].keys()):
+          verse = key
+          content = struct["chapter"][key]["verse"]
+
+          size = len(f"`  {chapter:>2}:{verse:<2}  `  {content}")
+
+          if total_size + size >= 2000:
+            total_size = 0
+            rets.append("") 
+
+          total_size += size
+
+          rets[-1] += f"`  {chapter:>2}:{verse:<2}  `  {content}"
+        
+        for r in rets: 
+          await channel.send(f"{r}")
+
+    except Exception as e:
+      #print(e)
+      print(e)
+
 @tasks.loop(seconds=3600.0)
 async def news_alert():
   guild = bot.get_guild(GUILD) 
@@ -96,7 +322,8 @@ async def news_alert():
     db.close()
 
     #########################################################
-    
+
+
     args = str(content)  
     args = args.split(" ")
     passage_name = args[1]
@@ -104,110 +331,10 @@ async def news_alert():
     #numbers = ",%20".join(args[1:])
     numbers = ";".join(args[2:])
 
-    books = {
-      "Матфей": "Matthew",
-      "Марк": "Mark",
-      "Лука": "Luke",
-      "Иоанн": "John",
-      "Деяния": "Acts",
-      "Иаков": "James",
-      "1Петр": "1Peter",
-      "2Петр": "2Peter",
-      "1Иоанн": "1John",
-      "2Иоанн": "2John",
-      "3Иоанн": "3John",
-      "Иуда": "Jude",
-      "Римляне": "Rom",
-      "1Коринфяне": "1Corinthians",
-      "2Коринфяне": "2Corinthians",
-      "Галаты": "Gal",
-      "Ефесяне": "Eph",
-      "Филиппийцы": "Philippians",
-      "Колоссяне": "Col",
-      "1Фессалоникийцы": "1Th",
-      "2Фессалоникийцы": "2Th",
-      "1Тимофей": "1Tim",
-      "2Тимофей": "2Tim",
-      "Тит": "Titus",
-      "Филимон": "Philemon",
-      "Евреи": "Hebrews",
-      "Откровение": "Rev ",
-    }
-
-    book_full_name = {
-      "Матфей": "Евангелие от Матфея",
-      "Марк": "Евангелие от Марка",
-      "Лука": "Евангелие от Луки",
-      "Иоанн": "Евангелие от Иоанна",
-      "Деяния": "Деяния святых апостолов",
-      "Иаков": "Послание Иакова",
-      "1Петр": "1-е послание Петра",
-      "2Петр": "2-е послание Петра",
-      "1Иоанн": "1-е послание Иоанна",
-      "2Иоанн": "2-е послание Иоанна",
-      "3Иоанн": "3-е послание Иоанна",
-      "Иуда": "Послание Иуды",
-      "Римляне": "Послание к Римлянам",
-      "1Коринфяне": "1-е послание к Коринфянам",
-      "2Коринфяне": "2-е послание к Коринфянам",
-      "Галаты": "Послание к Галатам",
-      "Ефесяне": "Послание к Ефесянам",
-      "Филиппийцы": "Послание к Филиппийцам",
-      "Колоссянe": "Послание к Колоссянам",
-      "1Фессалоникийцы": "1-е послание к Фессалоникийцам",
-      "2Фессалоникийцы": "2-е послание к Фессалоникийцам",
-      "1Тимофей": "1-е послание к Тимофею",
-      "2Тимофей": "2-е послание к Тимофею",
-      "Тит": "Послание к Титу",
-      "Филимон": "Послание к Филимону",
-      "Евреи": "Послание к Евреям",
-      "Откровение": "Откровение Иоанна Богослова",
-    }
-    
-    versions = {
-      "рус": "synodal",
-      "укр": "ukranian",
-    }
-
-    passage = books[passage_name]
-    version = versions[version]
-
-    url = f"https://getbible.net/json?passage={passage}%20{numbers}&version={version}"
-
-    response = requests.get(url)
-    try: #try parsing to dict
-      dataform = str(response.text).strip("'<>() ").replace('\'', '\"')
-    #  print(dataform[:-2])
-      dataform = dataform[:-2]
-      struct = json.loads(dataform)
-      
-      if (struct["type"] == "verse"):
-        # TODO make a dictionaru mapping json return names to russian or ukrainian full translation.
-        # Currently its working for russian only
-        name = struct["book"][0]["book_name"]
-
-        name = book_full_name[passage_name]
-        
-        ret = f"**{name}**\n"
-        curr_chapter = "None"
-
-        for b in struct["book"]:
-          chapter = b["chapter_nr"]
-          if (curr_chapter != chapter):
-            ret += "\n"
-          curr_chapter = chapter
-          
-          for key in list(b["chapter"].keys()):
-            verse = key
-            content = b["chapter"][key]["verse"]
-            ret += f"`  {chapter:>2}:{verse:<2}  `  {content}"
-
-        for ch in guild.channels:
-          if ("ріка-любові" in ch.name):
-            await ch.send(f"{ret}")
-
-    except Eception as e:
-      print(e)
+    for ch in guild.channels:
+      #if ("ріка-любові" in ch.name):
+      if ("технический" in ch.name):
+        await call_bible_api("рус", passage_name, numbers, ch)
 
 news_alert.start()
 
@@ -220,147 +347,7 @@ async def bible(ctx, *, args=None):
   #numbers = ",%20".join(args[1:])
   numbers = ";".join(args[2:])
 
-  books = {
-    "Матфей": "Matthew",
-    "Марк": "Mark",
-    "Лука": "Luke",
-    "Иоанн": "John",
-    "Деяния": "Acts",
-    "Иаков": "James",
-    "1Петр": "1Peter",
-    "2Петр": "2Peter",
-    "1Иоанн": "1John",
-    "2Иоанн": "2John",
-    "3Иоанн": "3John",
-    "Иуда": "Jude",
-    "Римляне": "Rom",
-    "1Коринфяне": "1Corinthians",
-    "2Коринфяне": "2Corinthians",
-    "Галаты": "Gal",
-    "Ефесяне": "Eph",
-    "Филиппийцы": "Philippians",
-    "Колоссяне": "Col",
-    "1Фессалоникийцы": "1Th",
-    "2Фессалоникийцы": "2Th",
-    "1Тимофей": "1Tim",
-    "2Тимофей": "2Tim",
-    "Тит": "Titus",
-    "Филимон": "Philemon",
-    "Евреи": "Hebrews",
-    "Откровение": "Rev ",
-  }
-
-  book_full_name = {
-    "Матфей": "Евангелие от Матфея",
-    "Марк": "Евангелие от Марка",
-    "Лука": "Евангелие от Луки",
-    "Иоанн": "Евангелие от Иоанна",
-    "Деяния": "Деяния святых апостолов",
-    "Иаков": "Послание Иакова",
-    "1Петр": "1-е послание Петра",
-    "2Петр": "2-е послание Петра",
-    "1Иоанн": "1-е послание Иоанна",
-    "2Иоанн": "2-е послание Иоанна",
-    "3Иоанн": "3-е послание Иоанна",
-    "Иуда": "Послание Иуды",
-    "Римляне": "Послание к Римлянам",
-    "1Коринфяне": "1-е послание к Коринфянам",
-    "2Коринфяне": "2-е послание к Коринфянам",
-    "Галаты": "Послание к Галатам",
-    "Ефесяне": "Послание к Ефесянам",
-    "Филиппийцы": "Послание к Филиппийцам",
-    "Колоссяне": "Послание к Колоссянам",
-    "1Фессалоникийцы": "1-е послание к Фессалоникийцам",
-    "2Фессалоникийцы": "2-е послание к Фессалоникийцам",
-    "1Тимофей": "1-е послание к Тимофею",
-    "2Тимофей": "2-е послание к Тимофею",
-    "Тит": "Послание к Титу",
-    "Филимон": "Послание к Филимону",
-    "Евреи": "Послание к Евреям",
-    "Откровение": "Откровение Иоанна Богослова",
-  }
-  
-  versions = {
-    "рус": "synodal",
-    "укр": "ukranian",
-  }
-
-  passage = books[passage_name]
-  version = versions[version]
-
-  url = f"https://getbible.net/json?passage={passage}%20{numbers}&version={version}"
-
-  response = requests.get(url)
-  try: #try parsing to dict
-    dataform = str(response.text).strip("'<>() ").replace('\'', '\"')
-  #  print(dataform[:-2])
-    dataform = dataform[:-2]
-    struct = json.loads(dataform)
-    
-    if (struct["type"] == "verse"):
-      # TODO make a dictionaru mapping json return names to russian or ukrainian full translation.
-      # Currently its working for russian only
-      name = struct["book"][0]["book_name"]
-      name = book_full_name[passage_name]
-      
-      rets = [f"**{name}**\n"]
-      total_size = len(rets[0])
-
-      curr_chapter = "None"
-
-      for b in struct["book"]:
-        chapter = b["chapter_nr"]
-        if (curr_chapter != chapter):
-          rets[-1] += "\n"
-        curr_chapter = chapter
-        
-        for key in list(b["chapter"].keys()):
-          verse = key
-          content = b["chapter"][key]["verse"]
-#          rets[-1] += f"`  {chapter:>2}:{verse:<2}  `  {content}"
-          
-          size = len(f"`  {chapter:>2}:{verse:<2}  `  {content}")
-          
-          if total_size + size >= 2000:
-            total_size = 0
-            rets.append("") 
-
-          total_size += size
-          rets[-1] += f"`  {chapter:>2}:{verse:<2}  `  {content}"
-
-      for r in rets: 
-        await ctx.channel.send(f"{r}")
-
-      #await ctx.channel.send(f"{ret}")
-
-    elif struct["type"] == "chapter":
-      name = struct["book_name"]
-      name = book_full_name[passage_name]
-
-      rets = [f"**{name}**\n\n"]
-      total_size = len(rets[0])
-
-      chapter = struct["chapter_nr"]
-      for key in list(struct["chapter"].keys()):
-        verse = key
-        content = struct["chapter"][key]["verse"]
-
-        size = len(f"`  {chapter:>2}:{verse:<2}  `  {content}")
-
-        if total_size + size >= 2000:
-          total_size = 0
-          rets.append("") 
-
-        total_size += size
-
-        rets[-1] += f"`  {chapter:>2}:{verse:<2}  `  {content}"
-      
-      for r in rets: 
-        await ctx.channel.send(f"{r}")
-
-  except Exception as e:
-    #print(e)
-    print(e)
+  await call_bible_api(version, passage_name, numbers, ctx.channel)
 
 
 def get_id(ref):
