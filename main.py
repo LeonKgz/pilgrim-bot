@@ -332,8 +332,7 @@ async def news_alert():
     numbers = ";".join(args[2:])
 
     for ch in guild.channels:
-      #if ("ріка-любові" in ch.name):
-      if ("технический" in ch.name):
+      if ("ріка-любові" in ch.name):
         await call_bible_api("рус", passage_name, numbers, ch)
 
 news_alert.start()
