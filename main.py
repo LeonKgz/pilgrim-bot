@@ -270,8 +270,7 @@ async def call_bible_api(lang, book_name, numbers_string, channel):
       #print(e)
       print(e)
 
-#@tasks.loop(seconds=3600.0)
-@tasks.loop(seconds=5.0)
+@tasks.loop(seconds=3600.0)
 async def news_alert():
   guild = bot.get_guild(GUILD) 
   db, cursor = get_db_cursor()
@@ -279,8 +278,7 @@ async def news_alert():
   hour = int(datetime.datetime.now().hour)
   print(f"DEBUG: Current hour is {hour}")
 
-  #if (guild and hour == 10):
-  if (guild):
+  if (guild and hour == 10):
 
     counter = None
 
@@ -336,8 +334,7 @@ async def news_alert():
     numbers = ";".join(args[2:])
 
     for ch in guild.channels:
-      #if ("ріка-любові" in ch.name):
-      if ("технический" in ch.name):
+      if ("ріка-любові" in ch.name):
         await call_bible_api("рус", passage_name, numbers, ch)
 
 news_alert.start()
