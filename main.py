@@ -270,7 +270,7 @@ async def call_bible_api(lang, book_name, numbers_string, channel):
       #print(e)
       print(e)
 
-@tasks.loop(seconds=3600.0)
+@tasks.loop(seconds=10.0)
 async def news_alert():
   guild = bot.get_guild(GUILD) 
   db, cursor = get_db_cursor()
@@ -278,7 +278,8 @@ async def news_alert():
   hour = int(datetime.datetime.now().hour)
   print(f"DEBUG: Current hour is {hour}")
 
-  if (guild and hour == 10):
+  #if (guild and hour == 10):
+  if (guild):
 
     counter = None
 
@@ -292,6 +293,7 @@ async def news_alert():
       return
 
     if (counter == 0):
+      print("DEBUG: Counter is ZERO")
       return
 
     with open('counter.txt', 'r+') as f:
@@ -307,7 +309,7 @@ async def news_alert():
 
       f.close()
 
-    print(f"Current offset: {current_offset}")
+    print(f"DEBUG: Current offset: {current_offset}")
     
     try:
       sql = f"SELECT * FROM verses ORDER By ID LIMIT 1 OFFSET {current_offset}"
@@ -322,6 +324,8 @@ async def news_alert():
       return
 
     db.close()
+    print(f"DEBUG: CONTENT IS \t\t\t{content}\n--------------")
+    return
 
     #########################################################
 
