@@ -270,7 +270,7 @@ async def call_bible_api(lang, book_name, numbers_string, channel):
       #print(e)
       print(e)
 
-@tasks.loop(seconds=10.0)
+@tasks.loop(seconds=3600.0)
 async def news_alert():
   guild = bot.get_guild(GUILD) 
   db, cursor = get_db_cursor()
@@ -278,8 +278,7 @@ async def news_alert():
   hour = int(datetime.datetime.now().hour)
   print(f"DEBUG: Current hour is {hour}")
 
-  #if (guild and hour == 10):
-  if (guild):
+  if (guild and hour == 10):
 
     counter = None
 
@@ -325,7 +324,6 @@ async def news_alert():
 
     db.close()
     print(f"DEBUG: CONTENT IS \t\t\t{content}\n--------------")
-    return
 
     #########################################################
 
