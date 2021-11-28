@@ -278,7 +278,7 @@ async def news_alert():
   hour = int(datetime.datetime.now().hour)
   print(f"DEBUG: Current hour is {hour}")
 
-  if (guild and hour == 10):
+  if (guild and hour == 9):
 
     counter = None
 
@@ -295,18 +295,25 @@ async def news_alert():
       print("DEBUG: Counter is ZERO")
       return
 
-    with open('counter.txt', 'r+') as f:
-      current_offset = int(f.readlines()[0])
-      
-      f.seek(0)
-      if (current_offset >= counter - 1):
-        f.write("0")
-      else:
-        f.write(f"{current_offset + 1}")
+    success = False
+    while not success:
+      try:
+        with open('counter.txt', 'r+') as f:
+          current_offset = int(f.readlines()[0])
+          
+          f.seek(0)
+          if (current_offset >= counter - 1):
+            f.write("0")
+          else:
+            f.write(f"{current_offset + 1}")
 
-      f.truncate()
+          f.truncate()
 
-      f.close()
+          f.close()
+          break
+      except Exception as e:
+        print(f"Write to counter file FAILED: \t\t\t{e}")
+        continue
 
     print(f"DEBUG: Current offset: {current_offset}")
     
