@@ -292,30 +292,59 @@ async def news_alert():
       return
 
     if (counter == 0):
-      print("DEBUG: Counter is ZERO")
+      print("DEBUG: counter is zero (no entries in the verse databse)")
       return
 
-    success = False
-    while not success:
-      try:
-        with open('counter.txt', 'r+') as f:
-          current_offset = int(f.readlines()[0])
-          
-          f.seek(0)
-          if (current_offset >= counter - 1):
-            f.write("0")
-          else:
-            f.write(f"{current_offset + 1}")
+    limit = counter
+    
+    try:
+      sql = f"SELECT * FROM counters WHERE ID = \"verses\""
+      cursor.execute(sql)
+      counter = int(cursor.fetchone()['Value'])
+      current_offset = counter
+      counter += 1
+      if (counter > limit - 1):
+        counter = 0
+    except Exception as e:
+      print(e)
+      db.rollback()
+      return
+    
+    db, cursor = get_db_cursor()
+    try:
+      sql = f"REPLACE INTO counters(ID, Value) VALUES(\"verses\", {counter})"
+      cursor.execute(sql)
+      db.commit()
 
-          f.truncate()
+    except Exception as e:
+      print(e)
+      db.rollback()
+      return
 
-          f.close()
-          break
-      except Exception as e:
-        print(f"Write to counter file FAILED: \t\t\t{e}")
-        continue
+    db.close()
+
+    #success = False
+    #while not success:
+    #  try:
+    #    with open('counter.txt', 'r+') as f:
+    #      current_offset = int(f.readlines()[0])
+    #      
+    #      f.seek(0)
+    #      if (current_offset >= counter - 1):
+    #        f.write("0")
+    #      else:
+    #        f.write(f"{current_offset + 1}")
+
+    #      f.truncate()
+
+    #      f.close()
+    #      break
+    #  except Exception as e:
+    #    print(f"Write to counter file FAILED: \t\t\t{e}")
+    #    continue
 
     print(f"DEBUG: Current offset: {current_offset}")
+    db, cursor = get_db_cursor()
     
     try:
       sql = f"SELECT * FROM verses ORDER By ID LIMIT 1 OFFSET {current_offset}"
@@ -343,6 +372,7 @@ async def news_alert():
     numbers = ";".join(args[2:])
 
     for ch in guild.channels:
+      #if ("технический" in ch.name):
       if ("ріка-любові" in ch.name):
         await call_bible_api("рус", passage_name, numbers, ch)
 
