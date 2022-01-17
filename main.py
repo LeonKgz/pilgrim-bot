@@ -100,7 +100,7 @@ async def call_bible_api(lang, book_name, numbers_string, channel):
       "Галаты": "Послание к Галатам",
       "Ефесяне": "Послание к Ефесянам",
       "Филиппийцы": "Послание к Филиппийцам",
-      "Колоссянe": "Послание к Колоссянам",
+      "Колоссяне": "Послание к Колоссянам",
       "1Фессалоникийцы": "1-е послание к Фессалоникийцам",
       "2Фессалоникийцы": "2-е послание к Фессалоникийцам",
       "1Тимофей": "1-е послание к Тимофею",
@@ -187,9 +187,11 @@ async def call_bible_api(lang, book_name, numbers_string, channel):
     }
 
     try:
+      
       passage = books_to_code[version][passage_name]
       name = full_names[version][passage_name]
       version = versions[version]
+
     except Exception as e:
       print(e)
       # If version is not specified use one of API's 
