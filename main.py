@@ -78,7 +78,8 @@ async def call_bible_api(lang, book_name, numbers_string, channel):
       "Тит": "Titus",
       "Филимон": "Philemon",
       "Евреи": "Hebrews",
-      "Откровение": "Rev ",
+      "Откровение": "Rev",
+      "Исаия": "Isaiah",
     }
 
     full_russian_names = {
@@ -109,6 +110,7 @@ async def call_bible_api(lang, book_name, numbers_string, channel):
       "Филимон": "Послание к Филимону",
       "Евреи": "Послание к Евреям",
       "Откровение": "Откровение Иоанна Богослова",
+      "Исаия": "Книга пророка Исаии",
     }
 
     ukranian_books_to_code = {
@@ -187,18 +189,18 @@ async def call_bible_api(lang, book_name, numbers_string, channel):
     }
 
     try:
-      
-      passage = books_to_code[version][passage_name]
       name = full_names[version][passage_name]
+      passage = books_to_code[version][passage_name]
       version = versions[version]
-
     except Exception as e:
       print(e)
       # If version is not specified use one of API's 
       version = version
       passage = passage_name
+      name = passage_name
 
     url = f"https://getbible.net/json?passage={passage}%20{numbers}&version={version}"
+    print(url)
 
     response = requests.get(url)
     try: #try parsing to dict
